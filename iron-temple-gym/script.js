@@ -1,323 +1,1584 @@
-// Iron Temple Gym - JavaScript File
+/* Iron Temple Gym - Stylesheet */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
 
-document.addEventListener('DOMContentLoaded', () => {
-  // --- Header Scroll Effect ---
-  const header = document.getElementById('main-header');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  });
+/* --- Custom Variables & Theme --- */
+:root {
+  --bg-primary: #181b21;
+  --bg-secondary: #212630;
+  --bg-tertiary: #2a303d;
+  --accent-color: #ff5400;
+  --accent-glow: rgba(255, 84, 0, 0.35);
+  --accent-light: #ff7324;
+  --text-main: #ffffff;
+  --text-muted: #cbd5e1;
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 84, 0, 0.5);
+  --glass-bg: rgba(33, 38, 48, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --container-width: 1200px;
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-  // --- Mobile Menu Toggle ---
-  const mobileToggle = document.getElementById('mobile-toggle');
-  const navMenu = document.getElementById('nav-menu');
-  const navLinks = document.querySelectorAll('.nav-links a');
+/* --- Base Styles & Reset --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  mobileToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    mobileToggle.classList.toggle('active');
-    
-    // Toggle hamburger icon animation
-    const spans = mobileToggle.querySelectorAll('span');
-    if (mobileToggle.classList.contains('active')) {
-      spans[0].style.transform = 'rotate(45deg) translate(5px, 6px)';
-      spans[1].style.opacity = '0';
-      spans[2].style.transform = 'rotate(-45deg) translate(5px, -6px)';
-    } else {
-      spans[0].style.transform = 'none';
-      spans[1].style.opacity = '1';
-      spans[2].style.transform = 'none';
-    }
-  });
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
 
-  // Close mobile menu on link click
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      navMenu.classList.remove('active');
-      mobileToggle.classList.remove('active');
-      const spans = mobileToggle.querySelectorAll('span');
-      spans[0].style.transform = 'none';
-      spans[1].style.opacity = '1';
-      spans[2].style.transform = 'none';
-    });
-  });
+body {
+  line-height: 1.6;
+}
 
-  // --- Active Navigation Link on Scroll ---
-  const sections = document.querySelectorAll('section');
-  
-  window.addEventListener('scroll', () => {
-    let currentSectionId = 'hero';
-    
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 120; // adjust offset for header height
-      const sectionHeight = section.clientHeight;
-      if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-        currentSectionId = section.getAttribute('id');
-      }
-    });
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
 
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === `#${currentSectionId}`) {
-        link.classList.add('active');
-      }
-    });
-  });
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
 
-  // --- Reveal on Scroll ---
-  const revealElements = document.querySelectorAll('.reveal');
-  
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        observer.unobserve(entry.target); // Stop observing after animation triggers
-      }
-    });
-  }, {
-    threshold: 0.15 // trigger when 15% of the element is visible
-  });
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 
-  revealElements.forEach(element => {
-    revealObserver.observe(element);
-  });
+input, textarea, button {
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
 
-  // --- Contact Form Submission & WhatsApp Forwarding ---
-  const contactForm = document.getElementById('gym-contact-form');
-  
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const name = document.getElementById('form-name').value;
-      const email = document.getElementById('form-email').value;
-      const goalSelect = document.getElementById('form-goal');
-      const goalText = goalSelect.options[goalSelect.selectedIndex].text;
-      const message = document.getElementById('form-message').value;
-      
-      // WhatsApp redirection logic
-      const whatsappBaseUrl = 'https://wa.me/1234567890';
-      const promptText = `Hi Iron Temple Gym! I just submitted an inquiry on your site:\n\n*Name:* ${name}\n*Email:* ${email}\n*Fitness Goal:* ${goalText}\n*Message:* ${message}`;
-      const encodedText = encodeURIComponent(promptText);
-      const finalWhatsappUrl = `${whatsappBaseUrl}?text=${encodedText}`;
+/* --- Utilities --- */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
 
-      // Custom alert and redirection choice
-      const alertBox = document.createElement('div');
-      alertBox.style.position = 'fixed';
-      alertBox.style.top = '50%';
-      alertBox.style.left = '50%';
-      alertBox.style.transform = 'translate(-50%, -50%)';
-      alertBox.style.background = 'var(--bg-secondary)';
-      alertBox.style.border = '1px solid var(--accent-color)';
-      alertBox.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.5)';
-      alertBox.style.padding = '2rem';
-      alertBox.style.borderRadius = '8px';
-      alertBox.style.zIndex = '1000';
-      alertBox.style.textAlign = 'center';
-      alertBox.style.maxWidth = '400px';
-      alertBox.style.width = '90%';
+.text-accent {
+  color: var(--accent-color);
+}
 
-      alertBox.innerHTML = `
-        <h4 style="color: #ff5400; font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase;">Enquiry Received!</h4>
-        <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 1.5rem;">Would you like to also send this message directly via WhatsApp for faster support?</p>
-        <div style="display: flex; gap: 1rem; justify-content: center;">
-          <button id="whatsapp-redirect-confirm" style="background: #25d366; color: #000; font-weight: 700; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem;">Send to WhatsApp</button>
-          <button id="whatsapp-redirect-cancel" style="background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.1); font-weight: 700; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem;">Just Close</button>
-        </div>
-      `;
+.section {
+  padding: 8rem 0;
+  position: relative;
+}
 
-      document.body.appendChild(alertBox);
+.section-title-wrapper {
+  margin-bottom: 4rem;
+  text-align: center;
+}
 
-      // Disable scrolling when dialog is open
-      document.body.style.overflow = 'hidden';
+.section-subtitle {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent-color);
+  margin-bottom: 0.75rem;
+  display: block;
+}
 
-      document.getElementById('whatsapp-redirect-confirm').addEventListener('click', () => {
-        window.open(finalWhatsappUrl, '_blank');
-        closeAlert();
-      });
+.section-title {
+  font-size: 2.75rem;
+  text-transform: uppercase;
+}
 
-      document.getElementById('whatsapp-redirect-cancel').addEventListener('click', () => {
-        closeAlert();
-      });
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 2rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  font-size: 0.9rem;
+  gap: 0.5rem;
+}
 
-      function closeAlert() {
-        document.body.removeChild(alertBox);
-        document.body.style.overflow = '';
-        contactForm.reset();
-      }
-    });
+.btn-primary {
+  background-color: var(--accent-color);
+  color: #000;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(255, 84, 0, 0.6);
+}
+
+.btn-secondary {
+  border: 1px solid var(--border-color);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-main);
+  transform: translateY(-2px);
+}
+
+/* --- Header / Navigation --- */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  background-color: rgba(24, 27, 33, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  transition: var(--transition-smooth);
+}
+
+header.scrolled {
+  background-color: var(--bg-primary);
+  padding: 0.5rem 0;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo span {
+  background: linear-gradient(135deg, var(--accent-color), #ffaa00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2.5rem;
+}
+
+.nav-links a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-main);
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-color);
+  transition: var(--transition-smooth);
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
+.nav-cta {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.mobile-menu-btn span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: var(--text-main);
+  transition: var(--transition-smooth);
+}
+
+/* --- Hero Section --- */
+.hero-section {
+    position: relative;
+    min-height: 100svh;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    overflow: hidden;
+}
+
+.hero-bg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.38) contrast(1.05);
+  transform: scale(1.05);
+  animation: heroZoom 20s infinite alternate ease-in-out;
+}
+
+@keyframes heroZoom {
+  0% { transform: scale(1.03); }
+  100% { transform: scale(1.12); }
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: radial-gradient(circle at center, transparent 30%, var(--bg-primary) 95%),
+              linear-gradient(to bottom, transparent 60%, var(--bg-primary) 100%);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 3;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: left;
+  max-width: 650px;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: heroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+}
+
+.hero-visual-3d {
+  width: 100%;
+  height: 500px;
+  position: relative;
+  z-index: 4;
+}
+
+@keyframes heroFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
 
-  // --- Three.js 3D Dumbbell Animation ---
-  const initThreeDumbbell = () => {
-    const container = document.getElementById('canvas-3d-container');
-    if (!container || typeof THREE === 'undefined') return;
+.hero-badge {
+  background-color: rgba(255, 84, 0, 0.1);
+  border: 1px solid rgba(255, 84, 0, 0.2);
+  color: var(--accent-color);
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  display: inline-block;
+  margin-bottom: 2rem;
+}
 
-    const width = container.clientWidth || 400;
-    const height = container.clientHeight || 400;
+.hero-title {
+  font-size: 5rem;
+  line-height: 1;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
 
-    // Scene
-    const scene = new THREE.Scene();
+.hero-title span.outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text-main);
+}
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.z = 8;
+.hero-description {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto 3rem auto;
+}
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+.hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: flex-start;
+}
 
-    // Group
-    const dumbbell = new THREE.Group();
+/* --- Features Section --- */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
 
-    // Materials
-    const steelMaterial = new THREE.MeshStandardMaterial({
-      color: 0x333333,
-      metalness: 0.95,
-      roughness: 0.15,
-    });
+.feature-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
 
-    const plateMaterial = new THREE.MeshStandardMaterial({
-      color: 0x151515,
-      metalness: 0.8,
-      roughness: 0.35,
-    });
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-color), #ffaa00);
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
 
-    const textAccentMaterial = new THREE.MeshStandardMaterial({
-      color: 0xff5400,
-      metalness: 0.9,
-      roughness: 0.2,
-      emissive: 0xff5400,
-      emissiveIntensity: 0.2,
-    });
+.feature-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 84, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
 
-    // 1. Shaft/Handle (Horizontal cylinder)
-    const shaftGeom = new THREE.CylinderGeometry(0.12, 0.12, 3.2, 32);
-    shaftGeom.rotateZ(Math.PI / 2);
-    const shaft = new THREE.Mesh(shaftGeom, steelMaterial);
-    dumbbell.add(shaft);
+.feature-card:hover::before {
+  opacity: 1;
+}
 
-    // Helper for adding plates
-    const createPlatePair = (radius, thickness, xOffset, material) => {
-      const plateGeom = new THREE.CylinderGeometry(radius, radius, thickness, 32);
-      plateGeom.rotateZ(Math.PI / 2);
+.feature-icon-wrapper {
+  color: var(--accent-color);
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
 
-      const leftPlate = new THREE.Mesh(plateGeom, material);
-      leftPlate.position.x = -xOffset;
+.feature-card h3 {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
 
-      const rightPlate = new THREE.Mesh(plateGeom, material);
-      rightPlate.position.x = xOffset;
+.feature-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
 
-      dumbbell.add(leftPlate);
-      dumbbell.add(rightPlate);
-    };
+/* --- Location Section (3rd Section) --- */
+.location-section {
+  background-color: var(--bg-secondary);
+}
 
-    // 2. Dumbbell Plates (Double side weights)
-    createPlatePair(0.85, 0.35, 0.9, plateMaterial);  // Inner Large
-    createPlatePair(0.78, 0.30, 1.25, plateMaterial); // Middle
-    createPlatePair(0.70, 0.25, 1.55, plateMaterial); // Outer Small
+.location-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3rem;
+  align-items: stretch;
+}
 
-    // 3. Colored Accent Trim Rings (Gives gym high-end look)
-    createPlatePair(0.86, 0.05, 0.70, textAccentMaterial);
-    
-    // 4. End Collars / Screws
-    createPlatePair(0.18, 0.12, 1.70, steelMaterial); // locking collars
+.map-wrapper {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+  height: 450px;
+}
 
-    scene.add(dumbbell);
+.map-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
-    scene.add(ambientLight);
+.location-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 3rem;
+  border-radius: 8px;
+}
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
-    dirLight1.position.set(5, 8, 5);
-    scene.add(dirLight1);
+.info-item {
+  margin-bottom: 2rem;
+}
 
-    // Colored Neon Lights
-    const orangeLight = new THREE.PointLight(0xff5400, 3.5, 12);
-    orangeLight.position.set(-3, -3, 3);
-    scene.add(orangeLight);
+.info-item:last-child {
+  margin-bottom: 0;
+}
 
-    const amberLight = new THREE.PointLight(0xffaa00, 2, 10);
-    amberLight.position.set(3, 4, 2);
-    scene.add(amberLight);
+.info-item-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
 
-    // Mouse Interaction
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
+.info-item-content {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
 
-    window.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-    });
+/* --- Equipments Section --- */
+.equipments-container {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 4rem;
+  align-items: center;
+}
 
-    // Animation Loop
-    let tick = 0;
-    
-    // Intro falling & spinning dampening variables
-    let introYOffset = 6.0;   // start high up
-    let introSpinX = 4.5;     // tumble offset X
-    let introSpinY = 6.0;     // tumble offset Y
+.equipments-image-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
 
-    const animate = () => {
-      requestAnimationFrame(animate);
+.equipments-image {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  filter: brightness(0.85);
+  transition: var(--transition-smooth);
+}
 
-      tick += 0.01;
+.equipments-image-wrapper:hover .equipments-image {
+  transform: scale(1.05);
+}
 
-      // Exponential decay towards 0 (tumbles and settles smoothly)
-      introYOffset *= 0.94;
-      introSpinX *= 0.94;
-      introSpinY *= 0.94;
+.equipments-content h3 {
+  font-size: 2rem;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
 
-      // Base spinning & floating combined with intro offsets
-      const baseRotationX = tick * 0.4 + introSpinX;
-      const baseRotationY = tick * 0.6 + introSpinY;
-      const floatOffsetY = Math.sin(tick * 1.5) * 0.15;
+.equipments-description {
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+}
 
-      dumbbell.position.y = floatOffsetY + introYOffset;
+.equipments-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
 
-      // Smooth mouse follow interpolation
-      targetX = mouseX * 0.6;
-      targetY = mouseY * 0.5;
+.equipment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
 
-      dumbbell.rotation.x += 0.05 * (targetY + baseRotationX - dumbbell.rotation.x);
-      dumbbell.rotation.y += 0.05 * (targetX + baseRotationY - dumbbell.rotation.y);
-      dumbbell.rotation.z = tick * 0.15;
+.equipment-icon {
+  color: var(--accent-color);
+  font-size: 1.25rem;
+  margin-top: 0.15rem;
+}
 
-      renderer.render(scene, camera);
-    };
+.equipment-item h4 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
 
-    animate();
+.equipment-item p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
 
-    // Resize Handler
-    window.addEventListener('resize', () => {
-      const newWidth = container.clientWidth;
-      const newHeight = container.clientHeight;
+/* --- Contact & WhatsApp Section --- */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
 
-      camera.aspect = newWidth / newHeight;
-      camera.updateProjectionMatrix();
+.contact-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 3.5rem;
+  border-radius: 8px;
+  height: 100%;
+}
 
-      renderer.setSize(newWidth, newHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    });
-  };
+.contact-details-list {
+  list-style: none;
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+}
 
-  // Run Three.js animation
-  setTimeout(initThreeDumbbell, 100);
-});
-document.querySelectorAll(".equipment-card").forEach(card => {
+.contact-details-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+}
 
-    card.addEventListener("click", () => {
+.contact-details-list li i {
+  color: var(--accent-color);
+  font-size: 1.25rem;
+  width: 24px;
+}
 
-        card.classList.toggle("active");
+.whatsapp-direct-box {
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  transition: var(--transition-smooth);
+}
 
-    });
+.whatsapp-direct-box:hover {
+  background: rgba(37, 211, 102, 0.12);
+  border-color: rgba(37, 211, 102, 0.4);
+}
 
-});
+.whatsapp-direct-box h4 {
+  color: #25d366;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.whatsapp-direct-box p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.btn-whatsapp {
+  background-color: #25d366;
+  color: #000;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp:hover {
+  background-color: #20ba5a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+/* --- Contact Form --- */
+.contact-form-wrapper {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 3.5rem;
+  border-radius: 8px;
+}
+
+.contact-form h3 {
+  font-size: 1.75rem;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+  color: var(--text-main);
+  transition: var(--transition-smooth);
+}
+
+.form-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(255, 84, 0, 0.15);
+}
+
+textarea.form-input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* --- Footer --- */
+footer {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.footer-socials a {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  transition: var(--transition-smooth);
+}
+
+.footer-socials a:hover {
+  color: var(--accent-color);
+}
+
+.footer-copy {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* --- Floating WhatsApp Widget --- */
+.whatsapp-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 99;
+  background-color: #25d366;
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  animation: floatPulse 2s infinite alternate ease-in-out;
+  
+}
+
+.whatsapp-float:hover {
+  background-color: #20ba5a;
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+}
+
+@keyframes floatPulse {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+/* --- Intersection Observer Animations --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Trainers Section --- */
+.trainers-section {
+  background-color: var(--bg-tertiary);
+}
+
+.trainers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+}
+
+.trainer-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: var(--transition-smooth);
+}
+
+.trainer-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-focus);
+  box-shadow: 0 10px 35px rgba(255, 84, 0, 0.08);
+}
+
+.trainer-image-wrapper {
+  flex: 0 0 40%;
+  max-width: 40%;
+  overflow: hidden;
+}
+
+.trainer-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+}
+
+.trainer-card:hover .trainer-image {
+  transform: scale(1.05);
+}
+
+.trainer-details {
+  padding: 2.5rem;
+  flex: 0 0 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.trainer-details h3 {
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.trainer-role {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+.trainer-bio {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.trainer-certs {
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.trainer-certs li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.trainer-certs li:last-child {
+  margin-bottom: 0;
+}
+
+.header-socials {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: 1.5rem;
+  align-items: center;
+}
+
+.header-socials a {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  transition: var(--transition-smooth);
+}
+
+.header-socials a:hover {
+  color: var(--accent-color);
+  transform: scale(1.15);
+}
+
+/* --- Social Connect Banner --- */
+.social-banner-section {
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+  padding: 4.5rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.social-banner-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.social-banner-text h3 {
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.social-banner-text p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.social-banner-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.social-banner-link {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.8rem 1.8rem;
+  border-radius: 6px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.social-banner-link:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 84, 0, 0.1);
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 1024px) {
+  .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.1;
+   }
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .location-grid {
+    grid-template-columns: 1fr;
+  }
+  .equipments-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .equipments-image-wrapper {
+    max-height: 400px;
+  }
+  .equipments-image {
+    height: 400px;
+  }
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 5rem 0;
+  }
+  .nav-links {
+    position: fixed;
+    top: 80px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background-color: var(--bg-primary);
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4rem;
+    transition: var(--transition-smooth);
+    z-index: 98;
+  }
+  .nav-links.active {
+    left: 0;
+  }
+  .mobile-menu-btn {
+    display: flex;
+  }
+  .nav-cta {
+    display: none;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  .hero-content {
+    text-align: center;
+    margin: 0 auto;
+  }
+ @media (max-width:768px){
+
+    .hero-visual-3d{
+        height:160px;   /* was 300px */
+        order:-1;
+    }
+
+}
+  .hero-title {
+    font-size: 2.75rem;
+  }
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+  }
+  .hero-actions .btn {
+    width: 100%;
+    max-width: 320px;
+  }
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  .location-info, .contact-card-wrapper, .contact-form-wrapper {
+    padding: 2rem;
+  }
+  @media (max-width:768px){
+
+    .whatsapp-float{
+        width:56px;
+        height:56px;
+        font-size:28px;
+
+        right:16px;
+        bottom:20px;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        border-radius:50%;
+        z-index:9999;
+    }
+
+   .whatsapp-float i{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+     bottom:calc(20px + env(safe-area-inset-bottom));
+}
+}
+  .trainers-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .trainer-card {
+    flex-direction: column;
+  }
+  .trainer-image-wrapper {
+    flex: 0 0 100%;
+    max-width: 100%;
+    height: 320px;
+  }
+  .trainer-details {
+    padding: 2rem;
+    flex: 0 0 100%;
+  }
+  .social-banner-container {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .social-banner-links {
+    justify-content: center;
+    width: 100%;
+  }
+  .social-banner-link {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+}
+.equipment-card{
+    cursor:pointer;
+}
+
+.equipment-card-image-wrapper{
+    position:relative;
+    overflow:hidden;
+    border-radius:18px;
+}
+
+.equipment-card-image{
+    width:100%;
+    height:500px;
+    object-fit:cover;
+    display:block;
+}
+
+.equipment-overlay{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    padding:28px;
+    color:#fff;
+
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,.95) 0%,
+        rgba(0,0,0,.75) 35%,
+        rgba(0,0,0,0) 100%
+    );
+}
+
+.equipment-overlay h3{
+    margin:8px 0;
+    font-size:30px;
+}
+
+.equipment-info{
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transition:all .55s ease;
+}
+
+.equipment-card.active .equipment-info{
+    max-height:350px;
+    opacity:1;
+}
+
+.equipment-card-tag{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    background:#ff6a00;
+    color:#fff;
+    font-size:13px;
+    margin-bottom:10px;
+}
+@media (max-width:768px){
+
+    .trainer-card{
+        display:flex !important;
+        flex-direction:column !important;
+        height:auto !important;
+        overflow:visible !important;
+    }
+
+    .trainer-image-wrapper{
+        width:100% !important;
+        max-width:100% !important;
+        flex:none !important;
+        height:320px !important;
+    }
+
+    .trainer-details{
+        display:block !important;
+        width:100% !important;
+        height:auto !important;
+        max-height:none !important;
+        overflow:visible !important;
+        opacity:1 !important;
+        visibility:visible !important;
+        padding:2rem !important;
+    }
+
+    .trainer-details *{
+        display:block !important;
+        opacity:1 !important;
+        visibility:visible !important;
+    }
+
+}
+@media (max-width:768px){
+
+    /* Contact section */
+    .contact-grid{
+        gap:1.5rem;
+    }
+
+    .contact-card-wrapper,
+    .contact-form-wrapper{
+        padding:1.5rem;
+    }
+
+    .contact-form h3{
+        font-size:1.5rem;
+        margin-bottom:1.2rem;
+    }
+
+    .contact-details-list{
+        margin:1rem 0;
+    }
+
+    .contact-details-list li{
+        margin-bottom:0.8rem;
+        font-size:0.9rem;
+    }
+
+    .whatsapp-direct-box{
+        padding:1.2rem;
+    }
+
+    .whatsapp-direct-box h4{
+        font-size:1.1rem;
+    }
+
+    .whatsapp-direct-box p{
+        margin-bottom:1rem;
+        font-size:0.9rem;
+    }
+
+    .form-group{
+        margin-bottom:1rem;
+    }
+
+    .form-input{
+        padding:0.85rem;
+        font-size:0.95rem;
+    }
+
+    textarea.form-input{
+        min-height:90px;
+    }
+
+    .btn{
+        padding:0.85rem 1rem;
+    }
+
+}
+/* ===========================================
+   COMPLETE MOBILE OPTIMIZATION
+   Add at the END of style.css
+===========================================*/
+
+@media (max-width:768px){
+
+/* General */
+
+.container{
+    padding:0 18px;
+}
+
+.section{
+    padding:60px 0;
+}
+
+.section-title{
+    font-size:2rem;
+}
+
+.section-subtitle{
+    font-size:.8rem;
+}
+
+/* Navigation */
+
+.nav-container{
+    height:70px;
+}
+
+.logo{
+    font-size:1.2rem;
+}
+
+/* Hero */
+
+.hero-section{
+    min-height:100svh;
+    height:auto;
+    padding-top:90px;
+    padding-bottom:40px;
+}
+
+.hero-grid{
+    gap:1rem;
+}
+
+.hero-visual-3d{
+    height:170px;
+}
+
+.hero-title{
+    font-size:2.2rem;
+    line-height:1.1;
+    margin-bottom:1rem;
+}
+
+.hero-description{
+    font-size:.95rem;
+    margin-bottom:1.3rem;
+}
+
+.hero-actions{
+    gap:.8rem;
+}
+
+.hero-actions .btn{
+    max-width:280px;
+}
+
+/* Equipment */
+
+.equipment-card-image{
+    height:320px;
+}
+
+.equipment-overlay{
+    padding:20px;
+}
+
+.equipment-overlay h3{
+    font-size:22px;
+}
+
+/* Trainers */
+
+.trainer-image-wrapper{
+    height:260px;
+}
+
+.trainer-details{
+    padding:1.3rem;
+}
+
+.trainer-details h3{
+    font-size:1.4rem;
+}
+
+.trainer-bio{
+    font-size:.9rem;
+}
+
+/* Google Map */
+
+.map-wrapper{
+    height:280px;
+}
+
+.location-info{
+    padding:1.5rem;
+}
+
+/* Contact */
+
+.contact-grid{
+    gap:1.5rem;
+}
+
+.contact-card-wrapper,
+.contact-form-wrapper{
+    padding:1.5rem;
+}
+
+.contact-form h3{
+    font-size:1.5rem;
+}
+
+.form-group{
+    margin-bottom:1rem;
+}
+
+.form-input{
+    padding:.85rem;
+}
+
+textarea.form-input{
+    min-height:90px;
+}
+
+/* Social Banner */
+
+.social-banner-section{
+    padding:3rem 0;
+}
+
+/* Footer */
+
+footer{
+    padding:2.5rem 0;
+}
+
+/* Floating WhatsApp */
+
+.whatsapp-float{
+
+    width:58px;
+    height:58px;
+
+    right:16px;
+    bottom:20px;
+
+    font-size:28px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+.whatsapp-float i{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+}
+
+}
+/*==========================
+MEMBERSHIP SECTION
+==========================*/
+
+.membership-section{
+
+    background:linear-gradient(
+    180deg,
+    #181b21,
+    #20252d,
+    #181b21);
+
+}
+
+.membership-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:2rem;
+
+    margin-top:4rem;
+
+}
+
+.membership-card{
+
+    background:var(--bg-secondary);
+
+    border:1px solid var(--border-color);
+
+    border-radius:18px;
+
+    padding:2.5rem;
+
+    text-align:center;
+
+    transition:.4s;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.membership-card:hover{
+
+    transform:translateY(-10px);
+
+    border-color:var(--accent-color);
+
+    box-shadow:0 20px 40px rgba(0,0,0,.4);
+
+}
+
+.membership-card h3{
+
+    font-size:2rem;
+
+    margin-bottom:1rem;
+
+}
+
+.price{
+
+    font-size:3rem;
+
+    color:var(--accent-color);
+
+    font-family:var(--font-heading);
+
+    margin-bottom:2rem;
+
+}
+
+.price span{
+
+    font-size:1rem;
+
+    color:var(--text-muted);
+
+}
+
+.membership-card ul{
+
+    list-style:none;
+
+    margin-bottom:2rem;
+
+}
+
+.membership-card li{
+
+    margin-bottom:1rem;
+
+    color:var(--text-muted);
+
+}
+
+.membership-card li i{
+
+    color:#00d26a;
+
+    margin-right:10px;
+
+}
+
+.featured{
+
+    transform:scale(1.05);
+
+    border:2px solid var(--accent-color);
+
+    box-shadow:0 20px 50px rgba(255,84,0,.25);
+
+}
+
+.featured:hover{
+
+    transform:translateY(-10px) scale(1.05);
+
+}
+
+.popular-badge{
+
+    position:absolute;
+
+    top:20px;
+
+    right:-45px;
+
+    background:var(--accent-color);
+
+    color:#000;
+
+    padding:8px 55px;
+
+    transform:rotate(45deg);
+
+    font-size:.75rem;
+
+    font-weight:bold;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.membership-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.featured{
+
+transform:none;
+
+}
+
+.featured:hover{
+
+transform:translateY(-10px);
+
+}
+
+.price{
+
+font-size:2.5rem;
+
+}
+
+.membership-card{
+
+padding:2rem;
+
+}
+
+}
