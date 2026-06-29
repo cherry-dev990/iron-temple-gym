@@ -1401,3 +1401,184 @@ footer{
 }
 
 }
+/*==========================
+MEMBERSHIP SECTION
+==========================*/
+
+.membership-section{
+
+    background:linear-gradient(
+    180deg,
+    #181b21,
+    #20252d,
+    #181b21);
+
+}
+
+.membership-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:2rem;
+
+    margin-top:4rem;
+
+}
+
+.membership-card{
+
+    background:var(--bg-secondary);
+
+    border:1px solid var(--border-color);
+
+    border-radius:18px;
+
+    padding:2.5rem;
+
+    text-align:center;
+
+    transition:.4s;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.membership-card:hover{
+
+    transform:translateY(-10px);
+
+    border-color:var(--accent-color);
+
+    box-shadow:0 20px 40px rgba(0,0,0,.4);
+
+}
+
+.membership-card h3{
+
+    font-size:2rem;
+
+    margin-bottom:1rem;
+
+}
+
+.price{
+
+    font-size:3rem;
+
+    color:var(--accent-color);
+
+    font-family:var(--font-heading);
+
+    margin-bottom:2rem;
+
+}
+
+.price span{
+
+    font-size:1rem;
+
+    color:var(--text-muted);
+
+}
+
+.membership-card ul{
+
+    list-style:none;
+
+    margin-bottom:2rem;
+
+}
+
+.membership-card li{
+
+    margin-bottom:1rem;
+
+    color:var(--text-muted);
+
+}
+
+.membership-card li i{
+
+    color:#00d26a;
+
+    margin-right:10px;
+
+}
+
+.featured{
+
+    transform:scale(1.05);
+
+    border:2px solid var(--accent-color);
+
+    box-shadow:0 20px 50px rgba(255,84,0,.25);
+
+}
+
+.featured:hover{
+
+    transform:translateY(-10px) scale(1.05);
+
+}
+
+.popular-badge{
+
+    position:absolute;
+
+    top:20px;
+
+    right:-45px;
+
+    background:var(--accent-color);
+
+    color:#000;
+
+    padding:8px 55px;
+
+    transform:rotate(45deg);
+
+    font-size:.75rem;
+
+    font-weight:bold;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.membership-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.featured{
+
+transform:none;
+
+}
+
+.featured:hover{
+
+transform:translateY(-10px);
+
+}
+
+.price{
+
+font-size:2.5rem;
+
+}
+
+.membership-card{
+
+padding:2rem;
+
+}
+
+}
