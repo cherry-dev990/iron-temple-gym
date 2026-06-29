@@ -246,13 +246,14 @@ header.scrolled {
 
 /* --- Hero Section --- */
 .hero-section {
-  position: relative;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 80px;
-  overflow: hidden;
+    position: relative;
+    min-height: 100svh;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    overflow: hidden;
 }
 
 .hero-bg-wrapper {
@@ -732,6 +733,7 @@ footer {
   cursor: pointer;
   transition: var(--transition-smooth);
   animation: floatPulse 2s infinite alternate ease-in-out;
+  
 }
 
 .whatsapp-float:hover {
@@ -925,8 +927,9 @@ footer {
 /* --- Mobile Responsiveness --- */
 @media (max-width: 1024px) {
   .hero-title {
-    font-size: 3.5rem;
-  }
+    font-size: 2.5rem;
+    line-height: 1.1;
+   }
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -983,10 +986,14 @@ footer {
     text-align: center;
     margin: 0 auto;
   }
-  .hero-visual-3d {
-    height: 300px;
-    order: -1;
-  }
+ @media (max-width:768px){
+
+    .hero-visual-3d{
+        height:160px;   /* was 300px */
+        order:-1;
+    }
+
+}
   .hero-title {
     font-size: 2.75rem;
   }
@@ -1006,13 +1013,31 @@ footer {
   .location-info, .contact-card-wrapper, .contact-form-wrapper {
     padding: 2rem;
   }
-  .whatsapp-float {
-    width: 50px;
-    height: 50px;
-    font-size: 1.6rem;
-    bottom: 1.5rem;
-    right: 1.5rem;
-  }
+  @media (max-width:768px){
+
+    .whatsapp-float{
+        width:56px;
+        height:56px;
+        font-size:28px;
+
+        right:16px;
+        bottom:20px;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        border-radius:50%;
+        z-index:9999;
+    }
+
+   .whatsapp-float i{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+     bottom:calc(20px + env(safe-area-inset-bottom));
+}
+}
   .trainers-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -1136,5 +1161,243 @@ footer {
         opacity:1 !important;
         visibility:visible !important;
     }
+
+}
+@media (max-width:768px){
+
+    /* Contact section */
+    .contact-grid{
+        gap:1.5rem;
+    }
+
+    .contact-card-wrapper,
+    .contact-form-wrapper{
+        padding:1.5rem;
+    }
+
+    .contact-form h3{
+        font-size:1.5rem;
+        margin-bottom:1.2rem;
+    }
+
+    .contact-details-list{
+        margin:1rem 0;
+    }
+
+    .contact-details-list li{
+        margin-bottom:0.8rem;
+        font-size:0.9rem;
+    }
+
+    .whatsapp-direct-box{
+        padding:1.2rem;
+    }
+
+    .whatsapp-direct-box h4{
+        font-size:1.1rem;
+    }
+
+    .whatsapp-direct-box p{
+        margin-bottom:1rem;
+        font-size:0.9rem;
+    }
+
+    .form-group{
+        margin-bottom:1rem;
+    }
+
+    .form-input{
+        padding:0.85rem;
+        font-size:0.95rem;
+    }
+
+    textarea.form-input{
+        min-height:90px;
+    }
+
+    .btn{
+        padding:0.85rem 1rem;
+    }
+
+}
+/* ===========================================
+   COMPLETE MOBILE OPTIMIZATION
+   Add at the END of style.css
+===========================================*/
+
+@media (max-width:768px){
+
+/* General */
+
+.container{
+    padding:0 18px;
+}
+
+.section{
+    padding:60px 0;
+}
+
+.section-title{
+    font-size:2rem;
+}
+
+.section-subtitle{
+    font-size:.8rem;
+}
+
+/* Navigation */
+
+.nav-container{
+    height:70px;
+}
+
+.logo{
+    font-size:1.2rem;
+}
+
+/* Hero */
+
+.hero-section{
+    min-height:100svh;
+    height:auto;
+    padding-top:90px;
+    padding-bottom:40px;
+}
+
+.hero-grid{
+    gap:1rem;
+}
+
+.hero-visual-3d{
+    height:170px;
+}
+
+.hero-title{
+    font-size:2.2rem;
+    line-height:1.1;
+    margin-bottom:1rem;
+}
+
+.hero-description{
+    font-size:.95rem;
+    margin-bottom:1.3rem;
+}
+
+.hero-actions{
+    gap:.8rem;
+}
+
+.hero-actions .btn{
+    max-width:280px;
+}
+
+/* Equipment */
+
+.equipment-card-image{
+    height:320px;
+}
+
+.equipment-overlay{
+    padding:20px;
+}
+
+.equipment-overlay h3{
+    font-size:22px;
+}
+
+/* Trainers */
+
+.trainer-image-wrapper{
+    height:260px;
+}
+
+.trainer-details{
+    padding:1.3rem;
+}
+
+.trainer-details h3{
+    font-size:1.4rem;
+}
+
+.trainer-bio{
+    font-size:.9rem;
+}
+
+/* Google Map */
+
+.map-wrapper{
+    height:280px;
+}
+
+.location-info{
+    padding:1.5rem;
+}
+
+/* Contact */
+
+.contact-grid{
+    gap:1.5rem;
+}
+
+.contact-card-wrapper,
+.contact-form-wrapper{
+    padding:1.5rem;
+}
+
+.contact-form h3{
+    font-size:1.5rem;
+}
+
+.form-group{
+    margin-bottom:1rem;
+}
+
+.form-input{
+    padding:.85rem;
+}
+
+textarea.form-input{
+    min-height:90px;
+}
+
+/* Social Banner */
+
+.social-banner-section{
+    padding:3rem 0;
+}
+
+/* Footer */
+
+footer{
+    padding:2.5rem 0;
+}
+
+/* Floating WhatsApp */
+
+.whatsapp-float{
+
+    width:58px;
+    height:58px;
+
+    right:16px;
+    bottom:20px;
+
+    font-size:28px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+.whatsapp-float i{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+}
 
 }
